@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--代表了IoC控制反转和DI依赖注入的思想，都是用来降低项目代码的耦合度，避免频繁修改源码
+    scope表示Bean的作用范围，有singleton和prototype两个值，前者的Bean为单例，创建容器时就存储在了单例池中；后者为原型，在调用getBean时才会创建Bean实例-->
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" scope="prototype">
+        <!--    name="userDao"代表userServiceImpl中的UserDao方法,ref="userDao"代表注入BeanFactory中id为userDao的Bean    -->
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+
+    <!--  配置UserDaoImpl  -->
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+
+</beans>
