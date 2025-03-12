@@ -3,8 +3,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="myBeanFactory1" class="com.itheima.factory.MyBeanFactory1" factory-method="userDao"></bean>
+    <bean id="myBeanFactory2" class="com.itheima.factory.MyBeanFactory2"></bean>
+    <bean id="myBeanFactory3" class="com.itheima.factory.MyBeanFactory3"></bean>
+    <bean id="userDao1" factory-bean="myBeanFactory2" factory-method="userDao"></bean>
+
     <!--  代表了IoC控制反转和DI依赖注入的思想，都是用来降低项目代码的耦合度，避免频繁修改源码  -->
-    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" scope="prototype">
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" lazy-init="true">
         <!--    name="userDao"代表userServiceImpl中的UserDao方法,ref="userDao"代表注入BeanFactory中id为userDao的Bean    -->
         <property name="userDao" ref="userDao"></property>
     </bean>
