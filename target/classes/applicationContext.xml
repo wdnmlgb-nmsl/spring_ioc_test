@@ -3,18 +3,98 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!--  通过import引入其他模块的配置文件  -->
+    <!--<import resource="classpath:beans.xml"></import>-->
+
+    <!--  代表了IoC控制反转和DI依赖注入的思想，都是用来降低项目代码的耦合度，避免频繁修改源码  -->
+    <!--  当autowire为按名字注入时找的名字是set方法后面的名字并于容器中名字一致的Bean匹配；按类型注入时，如果有多个相同类型的Bean会注入失败  -->
+    <!--<bean id="userService" class="com.itheima.service.impl.UserServiceImpl" lazy-init="true" autowire="byName">
+        &lt;!&ndash;    name="userDao"代表userServiceImpl中的setUserDao方法,ref="userDao"代表注入BeanFactory中id为userDao的Bean    &ndash;&gt;
+        <property name="userDaoSet">
+            <set>
+                <ref bean="userDao_1"></ref>
+                <ref bean="userDao_2"></ref>
+                <ref bean="userDao_3"></ref>
+            </set>
+        </property>
+        <property name="userDaoMap">
+            <map>
+                <entry key="fheuwi" value-ref="userDao_1"></entry>
+                <entry key="afeui" value-ref="userDao_2"></entry>
+            </map>
+        </property>
+        <property name="properties">
+            <props>
+                <prop key="p1">pppp</prop>
+                <prop key="p2">pppp</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="userService_1" class="com.itheima.service.impl.UserServiceImpl">
+    </bean>
+
+    <bean class="com.itheima.processor.MyBeanFactoryPostProcessor"></bean>
+
+    &lt;!&ndash;  三种不同的工厂模式  &ndash;&gt;
     <bean id="myBeanFactory1" class="com.itheima.factory.MyBeanFactory1" factory-method="userDao"></bean>
     <bean id="myBeanFactory2" class="com.itheima.factory.MyBeanFactory2"></bean>
     <bean id="myBeanFactory3" class="com.itheima.factory.MyBeanFactory3"></bean>
     <bean id="userDao1" factory-bean="myBeanFactory2" factory-method="userDao"></bean>
 
-    <!--  代表了IoC控制反转和DI依赖注入的思想，都是用来降低项目代码的耦合度，避免频繁修改源码  -->
-    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl" lazy-init="true">
-        <!--    name="userDao"代表userServiceImpl中的UserDao方法,ref="userDao"代表注入BeanFactory中id为userDao的Bean    -->
+    &lt;!&ndash;  配置UserDaoImpl  &ndash;&gt;
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userDao_1" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userDao_2" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+    <bean id="userDao_3" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+
+    &lt;!&ndash;  配置非自定义类，此时需要到该包下看它有没有构造方法  &ndash;&gt;
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.drive"></property>
+        <property name="url" value="jdbc:mysql://localhost:3306/gitlog"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="123456"></property>
+    </bean>
+
+    <bean id="clazz" class="java.lang.Class" factory-method="forName">
+        <constructor-arg name="className" value="com.mysql.cj.jdbc.Driver"></constructor-arg>
+    </bean>
+
+    <bean id="connection" class="java.sql.DriverManager" factory-method="getConnection" scope="prototype">
+        <constructor-arg name="url" value="jdbc:mysql://localhost:3306/gitlog?serverTimezone=Asia/Shanghai"></constructor-arg>
+        <constructor-arg name="user" value="root"></constructor-arg>
+        <constructor-arg name="password" value="123456"></constructor-arg>
+    </bean>
+
+    <bean id="simpleDateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg name="pattern" value="yyyy-MM-dd HH:mm:ss"></constructor-arg>
+    </bean>
+
+    <bean id="date" factory-bean="simpleDateFormat" factory-method="parse">
+        <constructor-arg name="source" value="2025-3-12 21:45:05"></constructor-arg>
+    </bean>-->
+
+    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl" lazy-init="true"></bean>
+    <bean id="userService" class="com.itheima.service.impl.UserServiceImpl">
         <property name="userDao" ref="userDao"></property>
     </bean>
 
-    <!--  配置UserDaoImpl  -->
-    <bean id="userDao" class="com.itheima.dao.impl.UserDaoImpl"></bean>
+<!--    <bean class="com.itheima.processor.MyBeanPostProcessor"></bean>-->
+
+<!--    <bean class="com.itheima.processor.TimeLogBeanPostProcessor"></bean>-->
+
+    <!--  一般为根目录，还可以嵌套在根目录内，用profile属性切换开发环境  -->
+    <!--  可以使用两种方式指定被激活的环境
+          1.使用命令行动态参数，虚拟机参数位置加载-DSpring.profile.active=test
+          2.使用代码的方式设置环境变量System.setProperty("spring.profiles.active","test")
+    -->
+    <beans profile="dev">
+        <bean id="userService1" class="com.itheima.service.impl.UserServiceImpl">
+        </bean>
+    </beans>
+
+    <beans profile="test">
+        <bean id="userService2" class="com.itheima.service.impl.UserServiceImpl">
+        </bean>
+    </beans>
 
 </beans>
