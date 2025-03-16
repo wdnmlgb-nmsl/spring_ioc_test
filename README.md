@@ -32,7 +32,7 @@ Spring的后处理器是Spring对外开发的重要扩展点，允许我们介�
   接口方法、执行BeanPostProcessor方法、执行InitializingBean接口的初始化方法、执行自定义初始化init方法等。
   该阶段是Spring最具技术含量和复杂度的阶段，Aop增强功能，后面要学习的弹簧的注解功能等、弹簧高频面试题豆豆的循环引用问题都是在这个阶段体现的;
 + Bean的完成阶段:经过初始化阶段，Bean就成为了一个完整的SpringBean，被存储到单例池中去了，即完成了SpringBean的整个生命周期。
-### Bean属性注入的几种情况
+## Bean属性注入的几种情况
 + 注入普通属性，string、int或基本类型的集合，直接通过set方法的反射设置进去
 + 注入单向对象引用属性，从容器中getBean获取后通过set方法反射设置进去，如果容器中没有，则先创建被注入对象Bean实例（完成整个生命周期）后，再进行注入操作。
 + 注入双向对象应用属性，比较复杂，涉及循环引用（循环依赖）问题。Spring提供了**三级缓存**的解决方法。
@@ -47,3 +47,13 @@ public class DefaultSingletonBeanRegistry...{
   Map<String,ObjectFactory<?>> singletonFactories = new HashMap(16); 
 }
 ```
+## 三级缓存图解
+![img.png](documentimg/img_002.png)
+![img.png](documentimg/img_003.png)
+![img.png](documentimg/img_004.png)
+![img.png](documentimg/img_005.png)
+## Bean生命周期一图流
+![img.png](documentimg/img__006.png)
+## xml整合第三方框架的两种整合方法
++ 不需要自定义名空间，不需要使用Spring的配置文件配置第三方框架本身内容，例如：MyBaits；
++ 需要引入第三方框架命名空间，需要使用Spring的配置文件配置第三方框架本身内容，例如：Dubbo。
