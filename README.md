@@ -116,3 +116,50 @@ Spring与MyBatis注解方式整合有个重要的技术就是@Import，
 ## AOP思想的实现方案
 动态代理技术，在运行期间，对目标对象的方法进行增强，代理对象同名方法内可以执行原有逻辑的同时嵌入执行其他增强逻辑或其他对象的方法
 ![img.png](documentimg/img_009.png)
+切点表达式：
+```
+execution([访问修饰符]返回值类型 包名.类名.方法名(参数))
+```
++ 访问修饰符可以省略不写
++ 返回值类型、某一级包名、类名、方法名可以使用*表示任意
++ 包名和类名之间使用单点.表示该包下面的类，使用双点表示该包及其子包下面的类
++ 参数列表使用两个点..表示任意参数
+```
+<!--表示访问修饰符为public、无返回值、在com.itheima.aop包下的TargetImpl类的无参方法show-->
+<aop:pointcut express="execution(public void com.itheima.aop.TargetImpl.show())"></aop:pointcut>
+<!--//表述com.itheima.aop包下的TargetImpl类的任意方法-->
+<aop:pointcut express="execution(* com.itheima.aop.TargetImpl.*(..))"></aop:pointcut>
+<!--表示com.itheima.aop包下的任意类的任意方法-->
+<aop:pointcut express="execution(execution(* com.itheima.aop.*.*(..)))"></aop:pointcut>
+<!--表示com.itheima.aop包及其子包下的任意类的任意方法-->
+<aop:pointcut express="execution(* com.itheima.aop..*.*(..))"></aop:pointcut>
+<!--表示任意包中的任意类的任意方法-->
+<aop:pointcut express="execution(* *..*.*(..))"></aop:pointcut>
+```
+![img.png](documentimg/img_010.png)
+![img.png](documentimg/img_011.png)
+![img.png](documentimg/img_012.png)
+## 基于AOP的声明式事务控制
++ 事务是开发中必不可少的东西，使用JDBC开发时， 我们使用connnection对事务进行控制， 使用MyBatis时, 我们
+使用SqlSession对事务进行控制，缺点显而易见，当我们切换数据库访问技术时，事务控制的方式总会变化,
+Spring就将这些技术基础上,提供了统一的控制事务的接口。 Spring的事务分为: 编程式事务控制和声明式事务控制
++ 编程式事务控制：Spring提供了事务控制的类和方法，使用编码的方式对业务代码进行事务控制,事务控制代码和业务
+  操作代码耦合到了一起，开发中不使用
++ 声明式事务控制：Spring将事务控制的代码封装，对外提供了Xml和注解配置方式，通过配置的方式完成事务的控制,
+  可以达到事务控制与业务操作代码解耦合，开发中推荐使用
+![img.png](documentimg/img_013.png)
+## JavaWeb三大组件及环境特点
+![img.png](documentimg/img_014.png)
+在进行Java开发时要遵循三层架构+MVC，Spring操作最核心的就是Spring容器，web层需要注入Service
+service层需要注入Dao(Mapper)，web层使用Servlet技术充当的话，需要在Servlet中获得Spring容器。
+web层代码如果都去编写创建AnnotationConfigApplicationContext的代码，那么配置类重复被加载了Spring容器也重复被创建了，
+不能每次想从容器中获得一个Bean都得先创建一次容器，这样肯定是不允许所以，我们现在的诉求很简单，如下:
++ ApplicationContext创建一次，配置类加载一次;
++ 最好web服务器启动时，就执行第1步操作，后续直接从容器中获取Bean使用即可;
++ ApplicationContext的引用需要在web层任何位置都可以获取到。
+## web层MVC框架思想和设计思路
+![img.png](documentimg/img_015.png)
+![img.png](documentimg/img_016.png)
+### SpringMVC快速入门
+![img.png](documentimg/img_017.png)
+![img.png](documentimg/img_018.png)
